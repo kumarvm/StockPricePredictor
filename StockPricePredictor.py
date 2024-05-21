@@ -12,20 +12,25 @@ from keras.callbacks import EarlyStopping
 data = yf.download('BP', start='2000-01-01', end='2024-01-01')
 data = data.reset_index()
 
-#Creating usable dataset from downloaded data
-new_data = pd.DataFrame(index=range(0, len(data)), columns=['Date', 'Adj Close'])
-for i in range(0, len(data)):
-    new_data['Date'][i] = data['Date'][i]
-    new_data['Adj Close'][i] = data['Adj Close'][i]
+# Creating additional features
+data['SMA_20'] = data['Adj Close'].rolling(window=20).mean()
+data['EMA_20'] = data['Adj Close'].ewm(span=20, adjust=False).mean()
+data['RSI'] = (100 - (100 / (1 + data['Adj Close'].pct_change().apply(lambda x: (1 + x) / (1 - x) if x != 0 else 1).rolling(window=14).mean())))
+data['Day'] = data['Date'].dt.day
+data['Month'] = data['Date'].dt.month
+data['Year'] = data['Date'].dt.year
+data['DayOfWeek'] = data['Date'].dt.dayofweek
 
-dates = data['Date']
-new_data.index = new_data['Date']
-new_data.drop('Date', axis=1, inplace=True)
-dataset = new_data.values
+# Handling missing values
+data.fillna(method='bfill', inplace=True)
 
-#Scaling data to fit inside an interval of (0,1)
+# Selecting features
+features = ['Adj Close', 'SMA_20', 'EMA_20', 'RSI', 'Day', 'Month', 'Year', 'DayOfWeek']
+new_data = data[features]
+
+# Scaling data
 scaler = MinMaxScaler()
-scaled_data = scaler.fit_transform(dataset)
+scaled_data = scaler.fit_transform(new_data)
 
 #Creating training and validation/test datasets
 split = 0.8
