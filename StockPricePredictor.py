@@ -81,7 +81,7 @@ plt.legend(['train_data', 'validation_data'])
 plt.show()
 
 #Plotting Stock Price Prediction
-validation_dates = dates[int(data.shape[0] * split) + timesteps:].reset_index(drop=True)
+validation_dates = data['Date'][int(data.shape[0] * split) + timesteps:].reset_index(drop=True)
 plt.plot(validation_dates, y_test, label='True Value')
 plt.plot(validation_dates, y_pred, label='Predicted Value')
 plt.title("Stock Price Prediction")
