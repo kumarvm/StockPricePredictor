@@ -32,11 +32,11 @@ The model losses are plotted and then finally, the predicted stock prices are pl
 Firstly make sure all the required libraries and modules are installed by using pip.
 
 For example: 
-```bash pip install yfinance```
+```pip install yfinance```
 
 Once all the dependencies are installed, run the program by typing the following command into the terminal:
 
-```bash python StockPricePredictor.py```
+```python StockPricePredictor.py```
 
 Expect the runtime of the program to be a couple of minutes (< 5 minutes).
 
